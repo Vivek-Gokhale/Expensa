@@ -8,5 +8,20 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.0",
+    "axios": "^1.8.3",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "logger": "^0.0.1",
+    "mysql2": "^3.13.0",
+    "nodemailer": "^6.10.0",
+    "tesseract.js": "^6.0.0",
+    "winston": "^3.17.0"
+  }
 }

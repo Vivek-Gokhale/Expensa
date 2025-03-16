@@ -1,0 +1,25 @@
+{"code":"ECONNREFUSED","fatal":true,"level":"error","message":"Database connection failed","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-12T13:34:31.765Z"}
+{"code":"ECONNREFUSED","fatal":true,"level":"error","message":"Failed to connect to database","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-12T13:34:31.770Z"}
+{"code":"ECONNREFUSED","fatal":true,"level":"error","message":"Database connection failed","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-12T13:38:09.896Z"}
+{"code":"ECONNREFUSED","fatal":true,"level":"error","message":"Failed to connect to database","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-12T13:38:09.976Z"}
+{"level":"info","message":"Database connection successful","timestamp":"2025-03-12T13:39:13.202Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-12T13:39:13.210Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-12T13:39:13.225Z"}
+{"level":"info","message":"Database connection successful","timestamp":"2025-03-12T21:09:55.798Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-12T21:09:55.802Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-12T21:09:55.812Z"}
+{"level":"info","message":"Database connection successful","timestamp":"2025-03-13T08:40:03.601Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-13T08:40:03.606Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-13T08:40:03.612Z"}
+{"level":"info","message":"Database connection successful","timestamp":"2025-03-13T11:05:47.283Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-13T11:05:47.288Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-13T11:05:47.296Z"}
+{"level":"info","message":"Database connection successful","timestamp":"2025-03-16T02:06:21.121Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-16T02:06:21.126Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-16T02:06:21.130Z"}
+{"level":"info","message":"Database connection successful","timestamp":"2025-03-16T02:26:40.930Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-16T02:26:40.934Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-16T02:26:40.938Z"}
+{"level":"info","message":"Database connection successful","timestamp":"2025-03-16T07:27:48.256Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-16T07:27:48.261Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-16T07:27:48.265Z"}
