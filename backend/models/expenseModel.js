@@ -1,65 +1,166 @@
+const { query } = require('express');
 const db = require('../utils/db');
 
 // Create a new expense
-const createExpense = async ({ user_id, category, amount, date, description, bill_image }) => {
+const createExpense = async ({ user_id, categoryId, amount, date, description, file }) => {
   const query = `
-    INSERT INTO expenses (user_id, category, amount, date, description, bill_image)
+    INSERT INTO expense_record (user_id, category_id, amount, date, description, receipt_image)
     VALUES (?, ?, ?, ?, ?, ?)
   `;
 
   const [result] = await db.query(query, [
     user_id,
-    category,
+    categoryId,
     amount,
     date,
     description,
-    bill_image
+    file
   ]);
 
   return result.insertId;
 };
 
 // Update an existing expense
-const updateExpense = async (id, { category, amount, date, description, bill_image }) => {
+const updateExpense = async (id, { categoryId, amount, date, description }) => {
   const query = `
-    UPDATE expenses
-    SET category = ?,
+    UPDATE expense_record
+    SET category_id = ?,
         amount = ?,
         date = ?,
-        description = ?,
-        bill_image = ?
+        description = ?
     WHERE eid = ?
   `;
 
   await db.query(query, [
-    category,
+    categoryId,
     amount,
     date,
     description,
-    bill_image,
     id
   ]);
 
   // Fetch the updated expense
-  const [updatedExpense] = await db.query('SELECT * FROM expenses WHERE eid = ?', [id]);
+  const [updatedExpense] = await db.query('SELECT * FROM expense_record WHERE eid = ?', [id]);
   return updatedExpense[0];
 };
 
 // Get a single expense by ID
 const getExpenseById = async (id) => {
-  const [rows] = await db.query('SELECT * FROM expenses WHERE eid = ?', [id]);
+  const [rows] = await db.query('SELECT * FROM expense_record WHERE eid = ?', [id]);
   return rows[0];
 };
 
 // Get all expenses for a specific user
-const getAllExpensesByUserId = async (userId) => {
-  const [rows] = await db.query('SELECT * FROM expenses WHERE user_id = ?', [userId]);
+const getTotalExpensesByCategory = async (userId) => {
+  const query = `
+    SELECT category.cid, category.category_name, SUM(expense_record.amount) AS total_amount
+    FROM expense_record
+    INNER JOIN category ON category.cid = expense_record.category_id
+    WHERE expense_record.user_id = ?
+    GROUP BY category.cid
+  `;
+
+  const [rows] = await db.query(query, [userId]);
   return rows;
 };
+
+module.exports = { getTotalExpensesByCategory };
+
+
+const getCategory = async (userId, category) => {
+  const [rows] = await db.query('SELECT * FROM category WHERE user_id = ? AND category_name = ?', [userId, category]);
+  return rows.length > 0 ? rows[0].cid : -1;
+};
+
+
+const addCategory = async(userId, category) =>{
+      const query = `
+      INSERT INTO category (user_id, category_name)
+      VALUES (?, ?)
+    `;
+
+    const [result] = await db.query(query, [
+      userId,
+      category,
+    ]);
+
+    return result.insertId;
+}
+
+const removeExpenseById = async (expenseId) => {
+  const query = `DELETE FROM expense_record WHERE eid = ?`;
+
+  const [result] = await db.query(query, [expenseId]);
+
+  return result.affectedRows > 0; 
+};
+
+const getYears = async (userId) => {
+  const query = `
+    SELECT DISTINCT YEAR(date) AS year
+    FROM expense_record
+    WHERE user_id = ?
+    ORDER BY year DESC
+  `;
+
+  const [rows] = await db.query(query, [userId]);
+  return rows;
+};
+
+const getMonthExpense = async (userId, year, month) => {
+  const query = `
+    SELECT category.cid, category.category_name, SUM(expense_record.amount) AS total_amount
+    FROM expense_record
+    INNER JOIN category ON category.cid = expense_record.category_id
+    WHERE expense_record.user_id = ? AND YEAR(expense_record.date) = ? AND MONTH(expense_record.date) = ?
+    GROUP BY category.cid, category.category_name
+    ORDER BY MAX(expense_record.date) DESC
+  `;
+
+  const [rows] = await db.query(query, [userId, year, month]);
+  return rows;
+};
+
+
+const getTotalMonthExpense = async (userId, year, month) => {
+  const query = `
+    SELECT SUM(amount) AS total_expense
+    FROM expense_record
+    WHERE user_id = ? AND YEAR(date) = ? AND MONTH(date) = ?
+  `;
+
+  const [rows] = await db.query(query, [userId, year, month]);
+
+  return rows[0]?.total_expense || 0; // Return 0 if no expenses found
+};
+
+
+
+const getYearExpense = async (userId, year) => {
+  const query = `
+    SELECT category.cid, category.category_name, SUM(expense_record.amount) AS total_amount
+    FROM expense_record
+    INNER JOIN category ON category.cid = expense_record.category_id
+    WHERE expense_record.user_id = ? AND YEAR(expense_record.date) = ?
+    GROUP BY category.cid, category.category_name
+    ORDER BY MAX(expense_record.date) DESC
+  `;
+
+  const [rows] = await db.query(query, [userId, year]);
+  return rows;
+};
+
 
 module.exports = {
   createExpense,
   updateExpense,
   getExpenseById,
-  getAllExpensesByUserId
+  getTotalExpensesByCategory,
+  getCategory,
+  addCategory,
+  removeExpenseById,
+  getYears,
+  getYearExpense,
+  getMonthExpense,
+  getTotalMonthExpense
 };

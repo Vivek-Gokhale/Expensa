@@ -4,7 +4,7 @@ const logger = require('../utils/logger');
 const editPreferences = async (req, res, next) => {
     try {
         const { user_id, budget_limit, budget_overrun_flag, newsletter_flag, daily_notification_flag, weekly_notification_flag } = req.body;
-
+        
         if (!user_id) {
             return res.status(400).json({ message: 'User ID is required' });
         }
@@ -19,7 +19,7 @@ const editPreferences = async (req, res, next) => {
 
         // Check if preferences exist for the user
         const existingPreferences = await userpreferences.getPreferencesById(user_id);
-
+        
         let result;
         if (existingPreferences) {
             // Update existing preferences
@@ -29,9 +29,7 @@ const editPreferences = async (req, res, next) => {
             result = await userpreferences.addPreferences(user_id, preferences);
         }
 
-        if (!result) {
-            return res.status(404).json({ message: 'User not found or no changes made' });
-        }
+       
 
         res.status(200).json({ message: 'Preferences updated successfully', preferences });
     } catch (error) {

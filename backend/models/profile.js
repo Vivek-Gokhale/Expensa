@@ -13,7 +13,7 @@ const createProfile = async (profileData) => {
 const updateProfile = async (id, profileData) => {
   const { username, phone_number, dob, profile_img, country } = profileData;
   await db.query(
-    'UPDATE user_profile SET username = ?, phone_number = ?, dob = ?, profile_img = ?, country = ? WHERE pid = ?',
+    'UPDATE user_profile SET username = ?, phone_number = ?, dob = ?, profile_img = ?, country = ? WHERE user_id = ?',
     [username, phone_number, dob, profile_img, country, id]
   );
   return getProfileById(id);
@@ -21,7 +21,7 @@ const updateProfile = async (id, profileData) => {
 
 const getProfileById = async (id) => {
   const [rows] = await db.query(
-    'SELECT * FROM user_profile WHERE pid = ?',
+    'SELECT * FROM user_profile WHERE user_id = ?',
     [id]
   );
   return rows[0];

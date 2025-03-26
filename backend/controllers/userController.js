@@ -9,27 +9,35 @@ const config = require('../utils/config');
 
 
 const registerUser = async (req, res, next) => {
-    try {
+  try {
+    console.log("Request Body:", req.body);
       const { email, password } = req.body;
 
-      // Check if staff with email already exists
-        const existingUser = await User.getByEmail(email);
-        if (existingUser) {
-          return res.status(400).json({ message: 'User with this email already exists' });
-        }
+      // Validate input
+      if (!email || !password) {
+          return res.status(400).json({ message: "Email and password are required" });
+      }
+
+      // Check if user with email already exists
+      const existingUser = await User.getByEmail(email);
+      if (existingUser) {
+          return res.status(400).json({ message: "User with this email already exists" });
+      }
 
       // Hash the password
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        // Create new staff
-        const newUser = await User.create({ username, password: hashedPassword, email });
-        res.status(201).json({ message: 'User registered successfully', userId: newUser.id });
-    } catch (error) {
-      logger.error('Error registering User', error);
+      // Create new user
+      const newUser = await User.create({ email, password: hashedPassword });
+
+      res.status(201).json({ message: "User registered successfully", userId: newUser.id });
+  } catch (error) {
+      logger.error("Error registering User", error);
       next(error);
-    }
+  }
 };
+
 
 const loginUser = async (req, res, next) => {
     try {
@@ -58,43 +66,53 @@ const loginUser = async (req, res, next) => {
 };
 
 const requestPasswordReset = async (req, res, next) => {
-  try {
-      const { email } = req.body;
-      const user = await User.getByEmail(email);
-
-      if (!user) {
-          return res.status(404).json({ message: 'User with this email not found' });
-      }
-
-      // Generate 4-digit OTP
-      const otp = Math.floor(1000 + Math.random() * 9000).toString();
-      const otpExpiry = Date.now() + 300; // 5 minutes expiration
-
-      // Store OTP in the database
-      await User.setOtp(user.id, otp, otpExpiry);
-      
-      // Send OTP email
-      const message = `Your password reset OTP is: ${otp}. It will expire in 5 minutes.`;
-      await sendResetEmail(email, message);
-
-      res.json({ message: 'Password reset OTP sent' });
-  } catch (error) {
-      logger.error('Error requesting password reset', error);
-      next(error);
-  }
-};
-
-const resetPassword = async (req, res, next) => {
     try {
-      const { otp, newPassword } = req.body;
-      const user = await User.getByResetToken(token);
+        const { email } = req.body;
+        const user = await User.getByEmail(email);
+        
+        console.log(user);
+        
+        if (!user) {
+            return res.status(404).json({ message: 'User with this email not found' });
+        }
+  
+        // Generate 4-digit OTP
+        const otp = Math.floor(1000 + Math.random() * 9000).toString();
+        
+        // Convert expiry time to MySQL DATETIME format
+        const otpExpiry = new Date(Date.now() + 5 * 60 * 1000)  // 5 minutes from now
+          .toISOString()
+          .slice(0, 19)
+          .replace("T", " "); // Converts to "YYYY-MM-DD HH:MM:SS"
+  
+        // Store OTP in the database
+        await User.setOtp(user.uid, otp, otpExpiry);
+  
+        // Send OTP email
+        const message = `Your password reset OTP is: ${otp}. It will expire in 5 minutes.`;
+        await sendResetEmail(email, message);
+  
+        res.json({ message: 'Password reset OTP sent' });
+    } catch (error) {
+        logger.error('Error requesting password reset', error);
+        next(error);
+    }
+  };
+  
+  const resetPassword = async (req, res, next) => {
+    try {
+        const { otp, newPassword } = req.body;
+        
+        const user = await User.getByOtp(otp);
 
         if (!user) {
-            return res.status(400).json({ message: 'Invalid otp' });
+            return res.status(400).json({ message: 'Invalid OTP' });
         }
 
-        if (user.resetTokenExpiry < Date.now()) {
-            return res.status(400).json({ message: 'otp expired' });
+        const tokenExpiryTime = new Date(user.resetTokenExpiry);
+        
+        if (tokenExpiryTime < new Date()) {
+            return res.status(400).json({ message: 'OTP expired' });
         }
 
         const saltRounds = 10;
@@ -109,6 +127,8 @@ const resetPassword = async (req, res, next) => {
         next(error);
     }
 };
+
+
 
 module.exports = {
     registerUser,
