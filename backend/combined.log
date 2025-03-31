@@ -367,3 +367,26 @@
 {"level":"info","message":"Database connection successful","timestamp":"2025-03-26T16:49:36.984Z"}
 {"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-26T16:49:36.998Z"}
 {"level":"info","message":"Server running on port 3000","timestamp":"2025-03-26T16:49:37.010Z"}
+{"level":"info","message":"Database connection successful","timestamp":"2025-03-31T02:34:24.965Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-31T02:34:24.975Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-31T02:34:24.987Z"}
+{"level":"info","message":"Password reset email sent successfully to","timestamp":"2025-03-31T02:37:19.311Z"}
+{"level":"info","message":"Database connection successful","timestamp":"2025-03-31T02:38:37.662Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-31T02:38:37.670Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-31T02:38:37.676Z"}
+{"level":"info","message":"Database connection successful","timestamp":"2025-03-31T02:39:52.301Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-31T02:39:52.307Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-31T02:39:52.313Z"}
+{"level":"info","message":"Database connection successful","timestamp":"2025-03-31T02:40:18.641Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-31T02:40:18.655Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-31T02:40:18.670Z"}
+{"level":"info","message":"Database connection successful","timestamp":"2025-03-31T02:41:15.664Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-31T02:41:15.673Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-31T02:41:15.680Z"}
+{"level":"info","message":"Database connection successful","timestamp":"2025-03-31T02:42:36.344Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-31T02:42:36.352Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-31T02:42:36.358Z"}
+{"level":"info","message":"Password reset email sent successfully to","timestamp":"2025-03-31T02:43:00.611Z"}
+{"level":"info","message":"Database connection successful","timestamp":"2025-03-31T02:44:31.500Z"}
+{"level":"info","message":"Connected to MySQL database","timestamp":"2025-03-31T02:44:31.507Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-31T02:44:31.515Z"}

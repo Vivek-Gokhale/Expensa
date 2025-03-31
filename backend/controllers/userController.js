@@ -98,26 +98,43 @@ const requestPasswordReset = async (req, res, next) => {
         next(error);
     }
   };
-  
-  const resetPassword = async (req, res, next) => {
-    try {
-        const { otp, newPassword } = req.body;
-        
-        const user = await User.getByOtp(otp);
 
-        if (!user) {
+  const verifyOtp = async (req, res, next) => {
+    try {
+
+        const { email, otp } = req.body;
+        
+        const user = await User.getByEmail(email);
+        console.log(user);
+        if (!user || user.reset_token != otp) {
             return res.status(400).json({ message: 'Invalid OTP' });
         }
 
-        const tokenExpiryTime = new Date(user.resetTokenExpiry);
-        
+        const tokenExpiryTime = new Date(user.reset_token_expiry);
         if (tokenExpiryTime < new Date()) {
             return res.status(400).json({ message: 'OTP expired' });
         }
 
+        res.json({ message: 'OTP verified successfully' });
+    } catch (error) {
+        logger.error('Error verifying OTP', error);
+        next(error);
+    }
+};
+
+  
+  const resetPassword = async (req, res, next) => {
+    try {
+        const { email, newPassword } = req.body;
+        
+        const user = await User.getByEmail(email);
+
+        if (!user) {
+            return res.status(400).json({ message: 'User not found' });
+        }
+
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-
         await User.updatePassword(user.id, hashedPassword);
         await User.clearResetToken(user.id);
 
@@ -135,4 +152,5 @@ module.exports = {
     loginUser,
     requestPasswordReset,
     resetPassword,
+    verifyOtp,
 };
