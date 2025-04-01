@@ -10,7 +10,6 @@ const config = require('../utils/config');
 
 const registerUser = async (req, res, next) => {
   try {
-    console.log("Request Body:", req.body);
       const { email, password } = req.body;
 
       // Validate input
@@ -54,11 +53,11 @@ const loginUser = async (req, res, next) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
           // Generate JWT token
-          const token = jwt.sign({ userId: user.id, email: user.email }, config.jwtSecret, {
+          const token = jwt.sign({ userId: user.uid, email: user.email }, config.jwtSecret, {
             expiresIn: '1h',
           });
 
-        res.json({ token, userId: user.id, userEmail: user.email, message: 'Login successful' });
+        res.json({ token, userId: user.uid, userEmail: user.email, message: 'Login successful' });
     } catch (error) {
       logger.error('Error logging in User', error);
       next(error);
@@ -135,8 +134,8 @@ const requestPasswordReset = async (req, res, next) => {
 
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-        await User.updatePassword(user.id, hashedPassword);
-        await User.clearResetToken(user.id);
+        await User.updatePassword(user.uid, hashedPassword);
+        await User.clearResetToken(user.uid);
 
         res.json({ message: 'Password reset successfully' });
     } catch (error) {

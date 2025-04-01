@@ -2,12 +2,20 @@ const db = require("../utils/db");
 
 const create = async (userData) => {
   const { email, password } = userData;
+  
   const [result] = await db.query(
       'INSERT INTO user_auth (email, password) VALUES (?, ?)',
       [email, password]
   );
-  
-  return { id: result.insertId, email };
+
+  const userId = result.insertId;
+
+  await db.query(
+      'INSERT INTO preferences (user_id, budget_overrun_flag, newsletter_flag, daily_notification_flag, weekly_notification_flag, email_flag) VALUES (?, ?, ?, ?, ?, ?)',
+      [userId, 1, 1, 1, 1, 1]
+  );
+
+  return { id: userId, email };
 };
 
 
@@ -18,7 +26,7 @@ const getByEmail = async (email) => {
 
 const setResetToken = async (userId, resetToken, resetTokenExpiry) => {
   await db.query(
-      'UPDATE user_auth SET reset_token = ?, reset_token_expiry = ? WHERE id = ?',
+      'UPDATE user_auth SET reset_token = ?, reset_token_expiry = ? WHERE uid = ?',
       [resetToken, resetTokenExpiry, userId]
   );
 };
@@ -41,7 +49,6 @@ const clearResetToken = async (userId) => {
     [userId]
   );
 };
-
 
 const updatePassword = async (userId, password) =>{
   await db.query(
