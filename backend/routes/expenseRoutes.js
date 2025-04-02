@@ -32,4 +32,7 @@ router.post('/delete-expense/:expenseId', expenseController.deleteExpenseById);
 router.get('/get-expense-years/:userId', expenseController.getExpenseYears);
 router.get('/get-expense-byyear/:userId/:year', expenseController.getExpenseByYear);
 router.get('/get-expense-bymonth/:userId/:year/:month', expenseController.getExpenseByMonth);
+router.get('/get-categories/:userId', expenseController.getCategories);
+router.get('/get-expense-bycategory/:userId/:year/:month/:cid', expenseController.getExpenseByCategory);
+
 module.exports = router;

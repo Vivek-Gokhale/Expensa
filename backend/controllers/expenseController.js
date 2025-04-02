@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 
 const genAI = new GoogleGenerativeAI(config.geminiApi);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 
 
@@ -293,5 +293,46 @@ const getExpenseByMonth = async (req, res, next) => {
   }
 };
 
+const getCategories = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
 
-module.exports = { getExpenseDetails, makeExpenseEntry, editExpenseEntry, getAllExpensesByUserId,getExpenseById, deleteExpenseById, getExpenseYears, getExpenseByMonth, getExpenseByYear};
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required' });
+    }
+
+    const categories = await expenseModel.getUserCategories(userId);
+
+    if (!categories || categories.length === 0) {
+      return res.status(404).json({ message: 'No categories found' });
+    }
+
+    res.status(200).json({ message: 'Categories retrieved successfully', data: categories });
+  } catch (error) {
+    logger.error('Error fetching categories', error);
+    next(error);
+  }
+};
+
+const getExpenseByCategory = async (req, res, next) => {
+  try {
+    const { userId, year, month, cid } = req.params;
+
+    if (!userId || !year || !month || !cid) {
+      return res.status(400).json({ message: 'User ID, Year, Month, and Category ID are required' });
+    }
+
+    const expenses = await expenseModel.getCategoryExpense(userId, year, month, cid);
+
+    if (!expenses || expenses.length === 0) {
+      return res.status(404).json({ message: 'No expenses found for this category in the given month' });
+    }
+
+    res.status(200).json({ message: 'Expenses retrieved successfully', data: expenses });
+  } catch (error) {
+    logger.error('Error fetching expenses by category', error);
+    next(error);
+  }
+};
+
+module.exports = { getExpenseDetails, makeExpenseEntry, editExpenseEntry, getAllExpensesByUserId,getExpenseById, deleteExpenseById, getExpenseYears, getExpenseByMonth, getExpenseByYear, getCategories, getExpenseByCategory};

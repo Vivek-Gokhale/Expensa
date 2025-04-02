@@ -150,6 +150,32 @@ const getYearExpense = async (userId, year) => {
   return rows;
 };
 
+const getUserCategories = async (userId) => {
+  const query = `
+    SELECT cid, category_name FROM category WHERE user_id = ?
+  `;
+
+  const [rows] = await db.query(query, [userId]); 
+  return rows;
+};
+
+const getCategoryExpense = async (userId, year, month, cid) => {
+  const query = `
+    SELECT category.cid, category.category_name, SUM(expense_record.amount) AS total_amount
+    FROM expense_record
+    INNER JOIN category ON category.cid = expense_record.category_id
+    WHERE expense_record.user_id = ? 
+      AND YEAR(expense_record.date) = ? 
+      AND MONTH(expense_record.date) = ? 
+      AND category.cid = ?
+    GROUP BY category.cid, category.category_name
+    ORDER BY MAX(expense_record.date) DESC
+  `;
+
+  const [rows] = await db.query(query, [userId, year, month, cid]);
+  return rows;
+};
+
 
 module.exports = {
   createExpense,
@@ -162,5 +188,7 @@ module.exports = {
   getYears,
   getYearExpense,
   getMonthExpense,
-  getTotalMonthExpense
+  getTotalMonthExpense,
+  getUserCategories,
+  getCategoryExpense
 };
